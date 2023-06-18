@@ -17,7 +17,7 @@ const ModalOverlay = (props) => {
           <h2>{props.title}</h2>
         </header>
         <div className={classes.content}>
-          <p>Are You Sure To Delete the Product!!</p>
+          <p className="text-center text-black">Are You Sure To Delete the Product!!</p>
         </div>
         <footer className={classes.actions}>
           <button
@@ -42,7 +42,7 @@ const ModalOverlay = (props) => {
         <header className={classes.header}>
           <h2>{props.title}</h2>
         </header>
-        < FormUpdate oneProduct={props.oneProduct} fillUpForOldData={props.fillUpForOldData} productid={props.productid} onClose={props.onClose}/>
+        < FormUpdate setUpdateHander={props.setUpdateHander} oneProduct={props.oneProduct} fillUpForOldData={props.fillUpForOldData} productid={props.productid} onClose={props.onClose}/>
      
       </>
     );
@@ -84,6 +84,7 @@ console.log(oneProduct &&oneProduct,'aa')
           productid={props.productid}
           fillUpForOldData={fillUpForOldData}
           oneProduct={oneProduct}
+          setUpdateHander={props.setUpdateHander}
         />,
         document.getElementById("model-root")
       )}

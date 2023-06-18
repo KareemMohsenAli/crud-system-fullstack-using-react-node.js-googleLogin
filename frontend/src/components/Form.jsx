@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
+import ImageUploadForm from "./ImageUploadForm";
+
 function Form({adduProductReflect}) {
     const [comfirm,setComfirm]=useState('')
   const { sub } = JSON.parse(localStorage.getItem("user"));
@@ -90,15 +92,20 @@ function Form({adduProductReflect}) {
           });
       };
       fetchFromAPI();
-      adduProductReflect(fetchFromAPI)
+      // adduProductReflect(fetchFromAPI)
     }
   };
 
   return (
     <>
-      <form onSubmit={sumbitHandler}>
-        <div className="flex flex-col justify-center items-center min-h-screen -mt-20 ">
-          <div className="m-3">
+       {/* <ImageUploadForm/> */}
+      <form className=" bg-gray-100" onSubmit={sumbitHandler}>
+      <h6 class="text-center flex justify-center py-3 text-4xl font-bold tracking-tight text-gray-900   px-4  hover:bg-blue-600 hover:translate-y-1 hover:scale-100 hover:text-white transition duration-700">
+          Add Product
+        </h6>
+        <div className="flex flex-col justify-center items-center max-h-screen   ">
+          
+          <div className="m-3 animate-kemo2">
             <label className=" italic">Product Name</label> <br />
             <input
               name="productName"
@@ -109,10 +116,10 @@ function Form({adduProductReflect}) {
               onChange={nameChangeHandler}
             />
             {error.productName && (
-              <p className="text-red-900">{error.productName}</p>
+              <p className="text-red-500">{error.productName}</p>
             )}
           </div>
-          <div className="m-3">
+          <div className="m-3 animate-kemo3">
             <label className=" italic">Product Price</label> <br />
             <input
               name="productPrice"
@@ -123,10 +130,10 @@ function Form({adduProductReflect}) {
               onChange={nameChangeHandler}
             />
             {error.productPrice && (
-              <p className="text-red-900">{error.productPrice}</p>
+              <p className="text-red-500">{error.productPrice}</p>
             )}
           </div>
-          <div className="m-3">
+          <div className="m-3 animate-kemo4">
             <label className=" italic">Product Category</label> <br />
             <input
               name="productCategory"
@@ -137,10 +144,10 @@ function Form({adduProductReflect}) {
               onChange={nameChangeHandler}
             />
             {error.productCategory && (
-              <p className="text-red-900">{error.productCategory}</p>
+              <p className="text-red-500">{error.productCategory}</p>
             )}
           </div>
-          <div className="m-3">
+          <div className="m-3 animate-kemo5">
             <label className=" italic">Product Details</label> <br />
             <textarea
               name="productDetails"
@@ -149,7 +156,7 @@ function Form({adduProductReflect}) {
               class="resize-none w-80 h-40 outline-blue-900 px-2 border border-[#1f2937] rounded"
             ></textarea>
             {error.productDetails && (
-              <p className="text-red-900">{error.productDetails}</p>
+              <p className="text-red-500">{error.productDetails}</p>
             )}
           </div>
           {isLoading ? (
@@ -159,7 +166,7 @@ function Form({adduProductReflect}) {
           ) : (
             <div className="m-3">
               <button
-                className=" border rounded-3xl bg-[#1f2937] text-[white] px-4 py-1 hover:bg-blue-900 hover:-translate-y-2 hover:scale-110 transition duration-500"
+                className=" border rounded-3xl bg-[#1f2937] text-[white] px-4 py-1 hover:bg-blue-600 hover:-translate-y-2 hover:scale-110 transition duration-500"
                 type="submit"
               >
                 submit

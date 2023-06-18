@@ -1,9 +1,11 @@
 const express = require("express");
 const multer = require("multer");
 const mysql = require("mysql2");
-const axios = require("axios");
 const cors = require("cors");
+const path = require('path');
+
 const app = express();
+
 const port = 5000;
 
 const connection = mysql.createConnection({
@@ -115,20 +117,89 @@ app.put("/updateproduct/:productid", (req, res) => {
 });
 
 app.get("/getproduct/:productid", (req, res) => {
-  const {productid} = req.params
-  console.log(productid)
+  const { productid } = req.params;
+  console.log(productid);
   const query = "SELECT * from products where id=? ";
-  connection.execute(query, [productid],(error, result) => {
+  connection.execute(query, [productid], (error, result) => {
     if (error) {
       return res.json({ message: "Query Error" });
     }
-    if(result.affectedRows===0){
+    if (result.affectedRows === 0) {
       return res.json({ message: "ID is not valid" });
-    }else {
-      return res.json({result:result});
+    } else {
+      return res.json({ result: result });
     }
   });
 });
+
+app.get("/searchbyproduct", (req, res) => {
+  const { search } = req.query;
+  console.log(search);
+  const query =
+    "SELECT users.*, products.* FROM users JOIN products ON users.id = products.createdby where productName like ?";
+  connection.execute(query, [`%${search}%`], (error, result) => {
+    if (error) {
+      return res.json({ message: "Query Error" });
+    }
+    if (result.affectedRows === 0) {
+      return res.json({ message: "this product not found" });
+    } else {
+      return res.json(result);
+    }
+  });
+});
+//////////////////////////////////////////////////////////////////////////////test
+const storage = multer.diskStorage({
+  destination: path.join(__dirname, 'uploads/'), // Specify the folder where uploaded files will be stored
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+    const extension = path.extname(file.originalname);
+    cb(null, file.fieldname + '-' + uniqueSuffix + extension);
+  },
+});
+const upload = multer({ storage});
+
+
+app.post('/upload-image', upload.single('image'), (req, res) => {
+  const imageFile = req.file;
+  // Save the file path or other relevant details in the database
+  const filePath = path.join(__dirname, imageFile.path);
+  // Insert the file path into the MySQL database
+  const sql = 'INSERT INTO images (image_data) VALUES (?)';
+  connection.execute(sql, [filePath],(error, results) => {
+    if (error) {
+      console.error('Error inserting file path:', error);
+      res.status(500).json({ error: 'Error inserting file path' });
+    } else {
+      console.log('File path inserted successfully');
+      res.status(200).json({ message: 'File uploaded successfully' });
+    }
+  });
+});
+
+
+app.get('/get-image', (req, res) => {
+  // Retrieve the file path from the MySQL database
+  const sql = 'SELECT image_data FROM images ORDER BY id DESC LIMIT 1';
+  connection.query(sql, (error, results) => {
+    if (error) {
+      console.error('Error retrieving file path:', error);
+      res.status(500).json({ error: 'Error retrieving file path' });
+    } else {
+      if (results.length > 0) {
+        const filePath = results[0].image_data;
+        // Send the image file to the client
+        res.setHeader('Content-Type', 'image/jpeg'); // Adjust the content type as per your image type
+        // Send the image data as the response
+        res.send(filePath);
+      } else {
+        res.status(404).json({ error: 'No image found' });
+      }
+    }
+  });
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });

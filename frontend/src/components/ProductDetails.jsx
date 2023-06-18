@@ -11,11 +11,14 @@ function ProductDetails({
   image_url,
   createdby,
   productid,
+  DeleteResponse,
+  setUpdateHander
 }) {
   const { sub } = JSON.parse(localStorage.getItem("user"));
   const [modalType,setModalType]=useState('')
   const [modelChangeHandler,setModelChangeHandler]=useState(false)
   const [error, setError] = useState(false);
+
 
   const openModelHandlerUpdate=()=>{
     setModelChangeHandler(true)
@@ -37,24 +40,28 @@ function ProductDetails({
       // Handle the response data
       console.log(response.data);
       setModelChangeHandler(false)
+      DeleteResponse(true)
       // setProducts(response.data);
     })
     .catch((error) => {
       // Handle any errors that occur during the request
       console.error(error);
     });
+    
   }
+
+
   const handleImageError = () => {
     setError(true);
   };
   return (
     <div class="">
-      <div class="mx-auto max-w-7xl px-6 lg:px-8 py-14">
+      <div class="mx-auto max-w-7xl px-6 lg:px-8 py-14 animate-kemo ">
         {/* mx-auto */}
         <div class=" max-w-2xl lg:mx-0">
-          <h2 class="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <h6 class="text-3xl font-bold tracking-tight text-gray-900 ">
             {ProductName}
-          </h2>
+          </h6>
           <p class="mt-2 text-lg leading-8 text-gray-600">
             {ProductDescription}
           </p>
@@ -76,7 +83,7 @@ function ProductDetails({
                   <button onClick={openModelHandlerUpdate} class="relative z-10 rounded-full bg-yellow-300 px-4 py-1  hover:-translate-y-2 hover:scale-110 transition duration-500 me-3">
                     Update
                   </button>
-                  {modelChangeHandler&&<Modal productid={productid} deleteHandler={deleteHandler} type={modalType} onClose={closeModelHandler}/>}
+                  {modelChangeHandler&&<Modal setUpdateHander={setUpdateHander} productid={productid} deleteHandler={deleteHandler} type={modalType} onClose={closeModelHandler}/>}
                   <button
                     onClick={openModelHandlerDelete}
                     class="relative z-10 rounded-full bg-red-600  px-4 py-1  hover:-translate-y-2 hover:scale-110 transition duration-500 "

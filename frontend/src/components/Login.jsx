@@ -3,7 +3,7 @@ import React from "react";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import shareVideo from "../assets/share.mp4";
-import logo from "../assets/logo.png";
+import logo from "../assets/61f12e3a57bdb3717fbf9cec_Product_Default.svg"
 import jwtDecode from "jwt-decode";
 import { client } from "../client";
 import axios from "axios";
@@ -23,7 +23,7 @@ function Login() {
         />
         <div className="absolute flex flex-col justify-center w-full h-full items-center top-0  bg-blackOverlay ">
           <div className="p-5">
-            <img src={logo} width="130px" alt="logo" />
+            <img  className="rounded-3xl" src={logo} width="300px" alt="logo" />
           </div>
           <div className="shadow-2xl">
             {/*             
@@ -76,7 +76,7 @@ function Login() {
                   // });
                   console.log(credentialResponse.credential);
                   console.log(details);
-                  navigate('/',{replace:true})
+                  navigate('/home',{replace:true})
                 }}
                 onError={() => {
                   console.log("login failed");
