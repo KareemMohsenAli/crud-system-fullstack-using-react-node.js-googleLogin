@@ -5,6 +5,9 @@ import Home from "./container/Home";
 import Navbar from "./components/Navbar";
 import Form from "./components/Form"
 import SearchFeed from "./components/SearchFeed";
+import Profile from "./components/Profile";
+
+
 function App() {
   const storage = localStorage.getItem("user");
   const location = useLocation();
@@ -18,6 +21,7 @@ function App() {
        <Route path="/home" element={<Home />} />
        <Route path="/addproduct" element={<Form />} />
        <Route path="/search/:SearchTerm" element={< SearchFeed/>} />
+       <Route path="/profile/:userId" element={< Profile/>} />
      
       {/* {!storage && <Route path="/" element={<Login />} />}
       {storage && <Route path="/home" element={<Home />} />}

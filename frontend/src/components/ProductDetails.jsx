@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import Modal from "../components/protal/Modal";
+import { Link } from "react-router-dom";
 
 function ProductDetails({
   ProductName,
@@ -12,7 +13,9 @@ function ProductDetails({
   createdby,
   productid,
   DeleteResponse,
-  setUpdateHander
+  setUpdateHander,
+  showUserDeatil
+  
 }) {
   const { sub } = JSON.parse(localStorage.getItem("user"));
   const [modalType,setModalType]=useState('')
@@ -99,7 +102,7 @@ function ProductDetails({
                 {category}
               </h3>
             </div>
-            <div class="relative mt-8 flex items-center gap-x-4">
+          <div class="relative mt-8 flex items-center gap-x-4">
               {error ? (
                 <span>Error loading profile picture</span>
               ) : (
@@ -111,8 +114,9 @@ function ProductDetails({
                   onError={handleImageError}
                 />
               )}
-              <div class="text-sm leading-6">
-                <p class="font-semibold text-gray-900 mt-5">{username}</p>
+              <div class="text-sm leading-6 mt-10 ">
+                <Link to={`/profile/${createdby}`} class="font-semibold text-gray-900 decoration-transparent">{username}</Link>
+                {/* <p class="font-semibold text-gray-900 mt-5">{username}</p> */}
                 <p class="text-gray-600 mb-5 ">email</p>
               </div>
             </div>

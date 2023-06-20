@@ -9,7 +9,7 @@ function Navbar() {
   const handleImageError = () => {
     setError(true);
   };
-  const { picture, name } = JSON.parse(localStorage.getItem("user")) ?? {};
+  const { picture, name ,sub} = JSON.parse(localStorage.getItem("user")) ?? {};
   if (!picture) {
     return <div className="d-none">not found</div>;
   }
@@ -114,7 +114,9 @@ function Navbar() {
 
                 <ul class="dropdown-menu">
                   <li>
-                    <button className=" text-[black] px-4 py-1 hover:bg-blue-600 hover:text-white w-full hover:translate-y-1  transition duration-500">
+                    <button onClick={()=>{
+                       navigate(`/profile/${sub}`);
+                    }} className=" text-[black] px-4 py-1 hover:bg-blue-600 hover:text-white w-full hover:translate-y-1  transition duration-500">
                       Profile
                     </button>
                   </li>

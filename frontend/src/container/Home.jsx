@@ -6,6 +6,7 @@ import From from "../components/Form";
 import axios from "axios";
 function Home() {
   // const [error, setError] = useState(false);
+  const[showUserDeatil,setShowUserDeatil]=useState(true)
   const [DeleteHandler,setDeleteHandler]=useState(false)
   const [updateHandler,setUpdateHander]=useState(false)
   const [products, setProducts] = useState([]);
@@ -45,6 +46,7 @@ function Home() {
         productid={product.id}
         DeleteResponse={setDeleteHandler}
         setUpdateHander={setUpdateHander}
+        showUserDeatil={showUserDeatil}
       />
     );
   });

@@ -98,7 +98,7 @@ function Form({adduProductReflect}) {
 
   return (
     <>
-       {/* <ImageUploadForm/> */}
+       <ImageUploadForm/>
       <form className=" bg-gray-100" onSubmit={sumbitHandler}>
       <h6 class="text-center flex justify-center py-3 text-4xl font-bold tracking-tight text-gray-900   px-4  hover:bg-blue-600 hover:translate-y-1 hover:scale-100 hover:text-white transition duration-700">
           Add Product
