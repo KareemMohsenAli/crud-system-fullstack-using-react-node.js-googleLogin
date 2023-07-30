@@ -1,9 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
-import ImageUploadForm from "./ImageUploadForm";
-
-function Form({adduProductReflect}) {
-    const [comfirm,setComfirm]=useState('')
+function Form({ adduProductReflect }) {
+  const [comfirm, setComfirm] = useState("");
   const { sub } = JSON.parse(localStorage.getItem("user"));
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProduct] = useState({
@@ -11,8 +9,18 @@ function Form({adduProductReflect}) {
     productPrice: "",
     productCategory: "",
     productDetails: "",
+    productImages: []
   });
   const [error, setError] = useState({});
+  const handleImageChange = (e) => {
+    const files = e.target.files;
+    const imageArray = Array.from(files);
+    setProduct((prevProducts) => ({
+      ...prevProducts,
+      productImages: imageArray,
+    }));
+  };
+
   //   const nameChangeHandler = (e) => {
   //     setProduct({ ...products, productName: e.target.value });
   //   };
@@ -57,26 +65,47 @@ function Form({adduProductReflect}) {
     if (products.productDetails.trim() === "") {
       validationErrors.productDetails = "Product Details is required";
     }
+    if (products.productImages.length === 0) {
+      validationErrors.productImages = "Please upload at least one image";
+    }
 
     if (Object.keys(validationErrors).length > 0) {
       setError(validationErrors);
     } else {
       setError({});
+      /////////////////////collecting data
+      const imagesArray = Array.from(products.productImages);
+
+      const formData = new FormData();
+      formData.append("productName", products.productName);
+      formData.append("productPrice", products.productPrice);
+      formData.append("productCategory", products.productCategory);
+      formData.append("productDetails", products.productDetails);
+      for (let i = 0; i < imagesArray.length; i++) {
+        formData.append("productImages", imagesArray[i]);
+      }
+      console.log("Form submitted:", formData);
+
+
       setProduct({
         productName: "",
         productPrice: "",
         productCategory: "",
         productDetails: "",
+        productImages: [],
       });
       // Submit the form or perform further processing
+      
+
+
       console.log("Form submitted:", products);
       console.log(products);
 
       const fetchFromAPI = () => {
         setIsLoading(true);
         axios
-          .post(`http://localhost:5000/addproducts/${sub}`, products, {
-            headers: { "Content-Type": "application/json" },
+          .post(`http://localhost:5000/addproducts/${sub}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
           })
           .then((response) => {
             // Handle the response data
@@ -98,13 +127,25 @@ function Form({adduProductReflect}) {
 
   return (
     <>
-       <ImageUploadForm/>
+      {/* <ImageUploadForm/> */}
       <form className=" bg-gray-100" onSubmit={sumbitHandler}>
-      <h6 class="text-center flex justify-center py-3 text-4xl font-bold tracking-tight text-gray-900   px-4  hover:bg-blue-600 hover:translate-y-1 hover:scale-100 hover:text-white transition duration-700">
+        <h6 class="text-center flex justify-center py-3 text-4xl font-bold tracking-tight text-gray-900   px-4  hover:bg-blue-600 hover:translate-y-1 hover:scale-100 hover:text-white transition duration-700">
           Add Product
         </h6>
-        <div className="flex flex-col justify-center items-center max-h-screen   ">
-          
+        <div className="flex flex-col justify-center items-center mix-h-screen   ">
+          <div className=" animate-kemo2 ms-5">
+          <label className=" italic">upload images</label> <br />
+            <input
+              type="file"
+              multiple
+              onChange={handleImageChange}
+              accept="image/*"
+            />
+               {error.productImages && (
+              <p className="text-red-500">{error.productImages}</p>
+            )}
+          </div>
+
           <div className="m-3 animate-kemo2">
             <label className=" italic">Product Name</label> <br />
             <input

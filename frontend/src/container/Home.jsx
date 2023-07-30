@@ -44,6 +44,7 @@ function Home() {
         image_url={product.image_url}
         createdby={product.createdby}
         productid={product.id}
+        ProductImages={product.productImages}
         DeleteResponse={setDeleteHandler}
         setUpdateHander={setUpdateHander}
         showUserDeatil={showUserDeatil}

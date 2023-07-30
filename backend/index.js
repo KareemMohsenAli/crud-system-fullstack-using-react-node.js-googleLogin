@@ -1,4 +1,5 @@
 const express = require("express");
+const { v4: uuidv4 } = require("uuid");
 const multer = require("multer");
 const mysql = require("mysql2");
 const cors = require("cors");
@@ -42,16 +43,29 @@ app.post("/users", (req, res) => {
   });
 });
 
-app.post("/addproducts/:userid", (req, res) => {
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/"); // Save files in the "uploads" folder
+  },
+  filename: (req, file, cb) => {
+    const uniqueName = `${uuidv4()}__${file.originalname}`; // Generate a unique name for each file
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({ storage });
+
+app.post("/addproducts/:userid", upload.array("productImages", 5),(req, res) => {
   const { userid } = req.params;
   const { productName, productPrice, productCategory, productDetails } =
     req.body;
+  const productImages = req.files.map((file) => file.path);
   console.log(userid);
   const query =
-    "INSERT INTO products (productName, productPrice, productCategory, productDetails,createdby) VALUES (?, ?, ?, ?,?)";
+    "INSERT INTO products (productName, productPrice, productCategory, productDetails,createdby,productImages) VALUES (?, ?, ?, ?,?,?)";
   connection.execute(
     query,
-    [productName, productPrice, productCategory, productDetails, userid],
+    [productName, productPrice, productCategory, productDetails, userid,JSON.stringify(productImages)],
     (error, result) => {
       if (error) {
         return res.json({ message: "Query Error" });
@@ -150,53 +164,43 @@ app.get("/searchbyproduct", (req, res) => {
   });
 });
 //////////////////////////////////////////////////////////////////////////////test
-const storage = multer.diskStorage({
-  destination: path.join(__dirname, "uploads/"), // Specify the folder where uploaded files will be stored
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const extension = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + extension);
-  },
-});
-const upload = multer({ storage });
+// app.post("/upload-image", upload.single("image"), (req, res) => {
+//   const imageFile = req.file;
+//   // Save the file path or other relevant details in the database
+//   const filePath = path.join(__dirname, imageFile.path);
+//   // Insert the file path into the MySQL database
+//   const sql = "INSERT INTO images (image_data) VALUES (?)";
+//   connection.execute(sql, [filePath], (error, results) => {
+//     if (error) {
+//       console.error("Error inserting file path:", error);
+//       res.status(500).json({ error: "Error inserting file path" });
+//     } else {
+//       console.log("File path inserted successfully");
+//       res.status(200).json({ message: "File uploaded successfully" });
+//     }
+//   });
+// });
 
-app.post("/upload-image", upload.single("image"), (req, res) => {
-  const imageFile = req.file;
-  // Save the file path or other relevant details in the database
-  const filePath = path.join(__dirname, imageFile.path);
-  // Insert the file path into the MySQL database
-  const sql = "INSERT INTO images (image_data) VALUES (?)";
-  connection.execute(sql, [filePath], (error, results) => {
-    if (error) {
-      console.error("Error inserting file path:", error);
-      res.status(500).json({ error: "Error inserting file path" });
-    } else {
-      console.log("File path inserted successfully");
-      res.status(200).json({ message: "File uploaded successfully" });
-    }
-  });
-});
-
-app.get("/get-image", (req, res) => {
-  // Retrieve the file path from the MySQL database
-  const sql = "SELECT image_data FROM images ORDER BY id DESC LIMIT 1";
-  connection.query(sql, (error, results) => {
-    if (error) {
-      console.error("Error retrieving file path:", error);
-      res.status(500).json({ error: "Error retrieving file path" });
-    } else {
-      if (results.length > 0) {
-        const filePath = results[0].image_data;
-        // Send the image file to the client
-        res.setHeader("Content-Type", "image/jpeg"); // Adjust the content type as per your image type
-        // Send the image data as the response
-        res.send(filePath);
-      } else {
-        res.status(404).json({ error: "No image found" });
-      }
-    }
-  });
-});
+// app.get("/get-image", (req, res) => {
+//   // Retrieve the file path from the MySQL database
+//   const sql = "SELECT image_data FROM images ORDER BY id DESC LIMIT 1";
+//   connection.query(sql, (error, results) => {
+//     if (error) {
+//       console.error("Error retrieving file path:", error);
+//       res.status(500).json({ error: "Error retrieving file path" });
+//     } else {
+//       if (results.length > 0) {
+//         const filePath = results[0].image_data;
+//         // Send the image file to the client
+//         res.setHeader("Content-Type", "image/jpeg"); // Adjust the content type as per your image type
+//         // Send the image data as the response
+//         res.send(filePath);
+//       } else {
+//         res.status(404).json({ error: "No image found" });
+//       }
+//     }
+//   });
+// });
 
 app.get("/userproducts/:userid", (req, res) => {
   const { userid } = req.params;

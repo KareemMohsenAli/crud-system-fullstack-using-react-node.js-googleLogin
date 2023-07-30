@@ -2,9 +2,13 @@ import axios from "axios";
 import React, { useState } from "react";
 import Modal from "../components/protal/Modal";
 import { Link } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function ProductDetails({
   ProductName,
+  ProductImages,
   ProductDescription,
   price,
   category,
@@ -57,11 +61,38 @@ function ProductDetails({
   const handleImageError = () => {
     setError(true);
   };
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+  };
+
   return (
     <div class="">
       <div class="mx-auto max-w-7xl px-6 lg:px-8 py-14 animate-kemo ">
         {/* mx-auto */}
         <div class=" max-w-2xl lg:mx-0">
+
+        <div className="m-3" >
+        <Slider {...sliderSettings}>
+          {JSON.parse(ProductImages)&&JSON.parse(ProductImages).map((image, index) => (
+              <img
+                key={index}
+                src={`http://localhost:5000/${image}`}
+                alt={`Product Image ${index}`}
+                className=" object-cover rounded w-[200px] h-[300px] "
+              />
+            ))}
+        </Slider>
+
+
+          </div>
+
+   
+
+
           <h6 class="text-3xl font-bold tracking-tight text-gray-900 ">
             {ProductName}
           </h6>
